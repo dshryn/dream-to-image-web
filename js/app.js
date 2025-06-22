@@ -1,17 +1,27 @@
-import { generateImage } from './api/pollinations.js';
+import { generateImageHF } from './api/hf.js';
 
-const inputEl = document.getElementById('promptInput');
+const promptEl = document.getElementById('promptInput');
 const btnEl = document.getElementById('generateBtn');
 const resultEl = document.getElementById('result');
 
+function autoParams(prompt) {
+    const len = prompt.length;
+    const steps = Math.min(30 + Math.floor(len / 15), 80);
+    const scale = prompt.includes(',') ? 8.0 : 7.0;
+    return { steps, scale };
+}
+
 btnEl.addEventListener('click', async () => {
-    const prompt = inputEl.value.trim();
+    const prompt = promptEl.value.trim();
     if (!prompt) return;
+
+    const { steps, scale } = autoParams(prompt);
     btnEl.disabled = true;
     btnEl.textContent = 'Generating…';
     resultEl.innerHTML = '';
+
     try {
-        const blob = await generateImage(prompt);
+        const blob = await generateImageHF({ prompt, steps, scale });
         const imgURL = URL.createObjectURL(blob);
         const img = document.createElement('img');
         img.src = imgURL;
@@ -19,9 +29,16 @@ btnEl.addEventListener('click', async () => {
         img.onload = () => URL.revokeObjectURL(imgURL);
         resultEl.appendChild(img);
     } catch {
-        resultEl.textContent = 'Failed to generate image.';
+        resultEl.textContent = 'Generation failed.';
     } finally {
         btnEl.disabled = false;
         btnEl.textContent = 'Generate';
+    }
+});
+
+promptEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        btnEl.click();
     }
 });
