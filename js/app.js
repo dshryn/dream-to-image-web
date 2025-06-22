@@ -21,15 +21,18 @@ btnEl.addEventListener('click', async () => {
     resultEl.innerHTML = '';
 
     try {
+        console.log('→', { prompt, steps, scale });
         const blob = await generateImageHF({ prompt, steps, scale });
+        console.log('← blob received');
         const imgURL = URL.createObjectURL(blob);
         const img = document.createElement('img');
         img.src = imgURL;
         img.alt = prompt;
         img.onload = () => URL.revokeObjectURL(imgURL);
         resultEl.appendChild(img);
-    } catch {
-        resultEl.textContent = 'Generation failed.';
+    } catch (err) {
+        console.error('Error:', err);
+        resultEl.textContent = `Generation failed: ${err.message}`;
     } finally {
         btnEl.disabled = false;
         btnEl.textContent = 'Generate';
