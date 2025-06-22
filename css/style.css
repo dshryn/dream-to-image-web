@@ -1,0 +1,30 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background: #1a1a1a;
+    color: #f0f0f0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper {
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.logo {
+    width: 120px;
+    margin-bottom: 2rem;
+}
+
+#result {
+    margin-top: 1.5rem;
+}
